@@ -1,83 +1,55 @@
-// 1. Elementlarni tanitib olamiz
+// 1. Elementlarni tanib olish
 const vazifaMatni = document.getElementById('vazifa-matni');
 const qoshishTugmasi = document.getElementById("qo'shish-tugmasi");
 const vazifalarRoyxati = document.getElementById("vazifalar-ro'yxati");
 const rejimTugmasi = document.getElementById('rejim-tugmasi');
 
-// =================================================================
-// 2. BACKEND (API) BILAN GAPLASHISH MANTIQI
-// =================================================================
+// LocalStorage'dan eski vazifalarni o'qish (agar bo'lsa)
+let vazifalarMassivi = JSON.parse(localStorage.getItem('vazifalar_keshi')) || [];
 
-// A. Serverdan barcha vazifalarni yuklab olish funksiyasi (GET so'rovi)
-function vazifalarniYuklash() {
-    // fetch() — bu Frontendning Backendga yuboradigan pochtachisi
-    fetch('/api/vazifalar')
-        .then(javob => javob.json()) // Kelgan javobni JSON formatiga o'giramiz
-        .then(vazifalar => {
-            vazifalarRoyxati.innerHTML = ""; // Ro'yxatni tozalaymiz
-            
-            // Serverdan kelgan har bitta vazifa uchun ekranda <li> yaratamiz
-            vazifalar.forEach(vazifa => {
-                const li = document.createElement('li');
-                li.textContent = vazifa.matn;
-                
-                // Har bir vazifaning yoniga o'chirish tugmasini qo'shamiz
-                const ochirishBtn = document.createElement('button');
-                ochirishBtn.textContent = "❌";
-                ochirishBtn.style.float = "right";
-                ochirishBtn.style.padding = "2px 5px";
-                ochirishBtn.style.backgroundColor = "red";
-                
-                // O'chirish tugmasi bosilganda API'ga DELETE so'rovi ketadi
-                ochirishBtn.onclick = function() {
-                    vazifaniOchirish(vazifa.id);
-                };
-                
-                li.appendChild(ochirishBtn);
-                vazifalarRoyxati.appendChild(li);
-            });
-        });
+// 2. Vazifalarni ekranga chiqarish funksiyasi
+function chizish() {
+    vazifalarRoyxati.innerHTML = "";
+    vazifalarMassivi.forEach((vazifa, indeks) => {
+        const li = document.createElement('li');
+        li.textContent = vazifa;
+
+        const ochirishBtn = document.createElement('button');
+        ochirishBtn.textContent = "❌";
+        ochirishBtn.style.float = "right";
+        ochirishBtn.style.padding = "2px 5px";
+        ochirishBtn.style.backgroundColor = "red";
+        ochirishBtn.style.width = "auto";
+        ochirishBtn.style.cursor = "pointer";
+
+        ochirishBtn.onclick = function() {
+            vazifalarMassivi.splice(indeks, 1);
+            localStorage.setItem('vazifalar_keshi', JSON.stringify(vazifalarMassivi));
+            chizish();
+        };
+
+        li.appendChild(ochirishBtn);
+        vazifalarRoyxati.appendChild(li);
+    });
 }
 
-// B. Yangi vazifa qo'shish funksiyasi (POST so'rovi)
+// 3. Qo'shish tugmasi hodisasi
 qoshishTugmasi.addEventListener('click', function() {
-    const matn = vazifaMatni.value;
-
+    const matn = vazifaMatni.value.trim();
     if (matn !== "") {
-        // Backendga JSON paket tayyorlab yuboramiz
-        fetch('/api/vazifalar', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ matn: matn }) // JSON matnga aylantirish
-        })
-        .then(javob => javob.json())
-        .then(() => {
-            vazifalarniYuklash(); // Ro'yxatni yangilash
-            vazifaMatni.value = ""; // Oynani tozalash
-        });
+        vazifalarMassivi.push(matn);
+        localStorage.setItem('vazifalar_keshi', JSON.stringify(vazifalarMassivi));
+        chizish();
+        vazifaMatni.value = "";
     } else {
         alert("Iltimos, matn kiriting!");
     }
 });
 
-// D. Vazifani o'chirish funksiyasi (DELETE so'rovi)
-function vazifaniOchirish(id) {
-    fetch(`/api/vazifalar/${id}`, {
-        method: 'DELETE'
-    })
-    .then(javob => javob.json())
-    .then(() => {
-        vazifalarniYuklash(); // Ro'yxatni qayta yangilash
-    });
-}
+// Birinchi marta yuklanganda chizish
+chizish();
 
-// Sayt birinchi marta ochilganda bazadagi ma'lumotlarni ekranga chiqarish
-vazifalarniYuklash();
-
-
-// =================================================================
-// 3. TUNGI REJIM (Buni LocalStorage'da qoldiramiz, chunki bu dizayn sozlamasi)
-// =================================================================
+// 4. Tungi rejim sozlamasi
 if (localStorage.getItem('sayt_rejimi') === 'dark') {
     document.body.classList.add('dark-mode');
     rejimTugmasi.textContent = "☀️ Kunduzgi rejim";
