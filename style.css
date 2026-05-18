@@ -1,0 +1,60 @@
+/* Saytning umumiy tanasi uchun sozlamalar */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9; /* Och kulrang fon */
+    text-align: center; /* Hamma narsani o'rtaga joylashtirish */
+    margin-top: 50px;
+}
+
+/* Kiritish oynasi (Input) dizayni */
+input {
+    padding: 10px;
+    width: 300px;
+    border: 1px solid #ccc;
+    border-radius: 5px; /* Burchaklarni silliqlash */
+    font-size: 16px;
+}
+
+/* Tugma (Button) dizayni */
+button {
+    padding: 10px 20px;
+    background-color: #28a745; /* Yashil rang */
+    color: white; /* Yozuv rangi oq */
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer; /* Sichqoncha borganda qo'lcha shakliga kirishi */
+}
+
+/* Tugma ustiga sichqoncha borganda rangining o'zgarishi */
+button:hover {
+    background-color: #218838; 
+}
+
+/* Vazifalar ro'yxati (List) dizayni */
+ul {
+    list-style-type: none; /* Ro'yxatdagi qora nuqtalarni olib tashlash */
+    padding: 0;
+}
+
+li {
+    background-color: white;
+    margin: 10px auto;
+    padding: 15px;
+    width: 300px;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1); /* Kichik soya effekti */
+    text-align: left;
+}
+/* Sayt qorong'u rejimga o'tganda ishlaydigan dizayn */
+body.dark-mode {
+    background-color: #1e1e24; /* To'q kulrang fon */
+    color: #ffffff; /* Oq matn */
+}
+
+/* Qorong'u rejimdagi vazifalar qutisi */
+body.dark-mode li {
+    background-color: #2a2a35;
+    color: #ffffff;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.5);
+}
