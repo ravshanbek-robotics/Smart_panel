@@ -1,6 +1,6 @@
 // 1. Kerakli global kutubxonalarni chaqirib olamiz
 const express = require('express');
-const sqlite3 = require('sqlite3').verbose();
+const sqlite3 = require('sqlite3'); // Shunchaki .verbose() qismini olib tashladik
 const path = require('path');
 
 const app = express();
